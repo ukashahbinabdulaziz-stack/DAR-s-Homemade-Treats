@@ -1,0 +1,6 @@
+{
+  "name": "Dar's Homemade Treats",
+  "description": "Premium luxury artisanal Nan Khatai and pure homemade Desi Ghee crafted with royal heritage recipes.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
