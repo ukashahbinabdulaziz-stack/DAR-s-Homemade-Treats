@@ -14,6 +14,22 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   </head>
   <body class="bg-[#FAF7F2] text-[#2A1810] selection:bg-[#D4AF37]/30 selection:text-[#2A1810] antialiased">
+    <!-- Netlify Static Form Discovery (Enables Netlify Forms & Pabbly Connect) -->
+    <form name="direct-buy-form" data-netlify="true" netlify-honeypot="bot-field" hidden>
+      <input type="hidden" name="form-name" value="direct-buy-form" />
+      <input type="text" name="orderId" />
+      <input type="text" name="customerName" />
+      <input type="tel" name="phoneNumber" />
+      <input type="text" name="city" />
+      <textarea name="address"></textarea>
+      <input type="text" name="productName" />
+      <input type="text" name="weight" />
+      <input type="number" name="quantity" />
+      <input type="number" name="totalPrice" />
+      <textarea name="notes"></textarea>
+      <input type="text" name="status" />
+    </form>
+
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

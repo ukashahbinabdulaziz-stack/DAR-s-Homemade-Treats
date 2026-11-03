@@ -101,18 +101,42 @@ export const DirectBuyModal: React.FC<DirectBuyModalProps> = ({
     setIsSubmitting(true);
 
     try {
-      /**
-       * GOOGLE SHEETS INTEGRATION (Web App URL)
-       * We POST the JSON payload to the Google Apps Script Web App URL.
-       * If user hasn't configured a live script URL yet, we catch gracefully and save locally.
-       */
+      // 1. Post to Netlify Form (Registers order in Netlify Forms & triggers Pabbly Connect)
+      try {
+        const formDataPayload: Record<string, string> = {
+          'form-name': 'direct-buy-form',
+          orderId: newOrder.id,
+          customerName: newOrder.customerName,
+          phoneNumber: newOrder.phoneNumber,
+          city: newOrder.city,
+          address: newOrder.address,
+          productName: newOrder.productName,
+          weight: newOrder.weightLabel,
+          quantity: String(newOrder.quantity),
+          totalPrice: String(newOrder.totalPrice),
+          notes: newOrder.notes || '',
+          status: newOrder.status,
+        };
+
+        const encodedBody = Object.keys(formDataPayload)
+          .map((k) => encodeURIComponent(k) + '=' + encodeURIComponent(formDataPayload[k]))
+          .join('&');
+
+        await fetch('/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: encodedBody,
+        });
+      } catch (netlifyErr) {
+        console.warn('Netlify form submission note:', netlifyErr);
+      }
+
+      // 2. Post to Google Sheets or Pabbly Webhook URL if configured
       const endpoint = googleSheetsUrl && googleSheetsUrl.startsWith('http')
         ? googleSheetsUrl
         : '';
 
       if (endpoint) {
-        // Post to Google Apps Script Web App
-        // Using mode: 'no-cors' allows submission without CORS blockage in Google Apps Script redirects
         await fetch(endpoint, {
           method: 'POST',
           mode: 'no-cors',
@@ -140,8 +164,7 @@ export const DirectBuyModal: React.FC<DirectBuyModalProps> = ({
       onOrderSuccess(newOrder);
       setSubmittedOrder(newOrder);
     } catch (err) {
-      console.warn('Google Sheet submission warning:', err);
-      // Even if network fails to Google Sheet, still log locally so order isn't lost
+      console.warn('Order submission error:', err);
       onOrderSuccess(newOrder);
       setSubmittedOrder(newOrder);
     } finally {
